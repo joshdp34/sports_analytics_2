@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>STA 3311 Sports Analytics II - 18&nbsp; Fitting and Overfitting</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./17_MLP.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="webex.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./18_Fitting.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Fitting and Overfitting</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./"></a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Intro to Data Manipulation with <code>dplyr</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_Stringr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">String, Dates, and Joins</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_Tidymodels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to Tidymodels</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Linear Regression with Regularization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_Logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Logistic Regression with Regularization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Mixed Effects Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_Data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Obtaining Sport Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_Web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Web Scraping with Rvest</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_Random.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Random Forests</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_Spatial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Visualization of Player Tracking Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_dimension.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Dimensionality Reduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_SVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Support Vector Machines</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_DBSCAN.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">DBSCAN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_MLP.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multi-Layer Perceptron</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_Fitting.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Fitting and Overfitting</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">18.1</span> Introduction</a></li>
+  <li><a href="#understanding-fitting-in-machine-learning" id="toc-understanding-fitting-in-machine-learning" class="nav-link" data-scroll-target="#understanding-fitting-in-machine-learning"><span class="header-section-number">18.2</span> Understanding Fitting in Machine Learning</a></li>
+  <li><a href="#techniques-to-combat-overfitting" id="toc-techniques-to-combat-overfitting" class="nav-link" data-scroll-target="#techniques-to-combat-overfitting"><span class="header-section-number">18.3</span> Techniques to Combat Overfitting</a>
+  <ul class="collapse">
+  <li><a href="#regularization" id="toc-regularization" class="nav-link" data-scroll-target="#regularization"><span class="header-section-number">18.3.1</span> Regularization</a></li>
+  <li><a href="#dropout" id="toc-dropout" class="nav-link" data-scroll-target="#dropout"><span class="header-section-number">18.3.2</span> Dropout</a></li>
+  </ul></li>
+  <li><a href="#hyperparameter-tuning" id="toc-hyperparameter-tuning" class="nav-link" data-scroll-target="#hyperparameter-tuning"><span class="header-section-number">18.4</span> Hyperparameter Tuning</a></li>
+  <li><a href="#stopping-rules" id="toc-stopping-rules" class="nav-link" data-scroll-target="#stopping-rules"><span class="header-section-number">18.5</span> Stopping Rules</a>
+  <ul class="collapse">
+  <li><a href="#early-stopping" id="toc-early-stopping" class="nav-link" data-scroll-target="#early-stopping"><span class="header-section-number">18.5.1</span> Early Stopping:</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">18.6</span> Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Fitting and Overfitting</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>“Although I wasn’t invited to shake hands with Hitler, I wasn’t invited to the White House to shake hands with the President either.” - Jesse Owens</p>
+</blockquote>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pics/owens.png" class="img-fluid figure-img" width="300"></p>
+<figcaption class="figure-caption">On August 11, 1936, American Jesse Owens wins the gold medal in the long jump during the Olympic games in Berlin. Adolf Hitler had been congratulating event winners but left the stadium shortly after three African Americas swept the high-jump event.</figcaption>
+</figure>
+</div>
+<section id="introduction" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">18.1</span> Introduction</h2>
+<p>In machine learning, the terms ‘overfitting’ and ‘underfitting’ describe two common pitfalls that can hinder the performance of a model when making predictions on new, unseen data. These concepts are foundational in understanding model performance and optimizing algorithms for practical use.</p>
+<ul>
+<li><p><strong>Definition of Overfitting</strong>: Overfitting occurs when a model learns the training data too well, to the extent that it captures noise and outliers as if they were representative of the underlying pattern. This results in a model that performs very well on its training data but poorly on any new or unseen data because it has essentially memorized the data rather than learned to generalize from it. Overfitting is akin to learning the quirks of a particular set of data so well that the model fails to make correct predictions on data that does not share those same quirks.</p></li>
+<li><p><strong>Definition of Underfitting</strong>: Conversely, underfitting happens when a model is too simple to capture the underlying structure of the data. This simplicity can result from having too few parameters in the model (underparameterization), which prevents it from learning enough about the data. As a result, such a model will perform poorly not only on new data but also on its training data, indicating that it has not captured the basic trends or patterns.</p></li>
+<li><p><strong>The Importance of Balance</strong>: The ultimate goal in model training is to achieve a balance between overfitting and underfitting. This balance ensures that the model captures the true underlying patterns of the data, with enough flexibility to perform well on new, unseen data but without being swayed by random fluctuations or outliers in the training set. Achieving this balance often involves techniques such as model selection, regularization, and validation.</p></li>
+</ul>
+</section>
+<section id="understanding-fitting-in-machine-learning" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="understanding-fitting-in-machine-learning"><span class="header-section-number">18.2</span> Understanding Fitting in Machine Learning</h2>
+<section id="training-set" class="level4">
+<h4 class="anchored" data-anchor-id="training-set">Training Set</h4>
+<p>The training set is the primary dataset on which a machine learning model is built. It’s used to fit the model parameters and is crucial for learning the relationships and patterns in the data. The model adjusts its weights based on the error it makes predictions on this set. However, using only a training set can lead to overfitting, especially if the model is overly complex and the training data contains noise or outliers. The model may perform exceptionally well on the training set but poorly on any unseen data because it has learned the specific quirks and noise of the training data instead of the general underlying patterns.</p>
+</section>
+<section id="validation-set" class="level4">
+<h4 class="anchored" data-anchor-id="validation-set">Validation Set</h4>
+<p>To mitigate the risk of overfitting, a validation set is used. This dataset is separate from the training set and is used to evaluate the model performance during the training phase. By assessing the model on the validation set, one can tune the model’s hyperparameters (like the number of layers in a neural network or the parameters in regularization techniques) more effectively. The validation set helps in deciding when to stop training the model—a method known as early stopping—to ensure that the model generalizes well and does not continue to learn the noise in the training set.</p>
+</section>
+<section id="test-set" class="level4">
+<h4 class="anchored" data-anchor-id="test-set">Test Set</h4>
+<p>After a model has been trained and validated, the final step is to evaluate its performance on a test set. This dataset is never used during the training phase and acts as a new, unseen dataset for the model. The performance on the test set provides a realistic evaluation of how well the model will perform in the real world, on entirely new data. This is the ultimate test of generalization and is critical for understanding the effectiveness of the machine learning model.</p>
+<p>Using these three types of datasets—training, validation, and test—helps in effectively training, tuning, and evaluating a machine learning model. This approach ensures that the model not only learns the underlying patterns from the training data but also generalizes well to new, unseen data, thus balancing overfitting and underfitting. These practices are fundamental to building robust and effective machine learning systems that perform well in practical applications.</p>
+</section>
+</section>
+<section id="techniques-to-combat-overfitting" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="techniques-to-combat-overfitting"><span class="header-section-number">18.3</span> Techniques to Combat Overfitting</h2>
+<section id="regularization" class="level3" data-number="18.3.1">
+<h3 data-number="18.3.1" class="anchored" data-anchor-id="regularization"><span class="header-section-number">18.3.1</span> Regularization</h3>
+<p>Regularization serves as a technique to impose constraints on the quantity and type of information your model can store. If a model can only afford to store information that improves its performance on the test data, it is less likely to fit to idiosyncratic, noisy features of the training data.</p>
+<p><strong>L1 Regularization (Lasso)</strong></p>
+<p>L1 regularization adds a penalty equal to the absolute value of the magnitude of the coefficients. This type of regularization can lead to sparse models with few coefficients; some coefficients can become zero and eliminated from the model. This feature makes L1 regularization useful not only for preventing overfitting but also for feature selection.</p>
+<p><strong>L2 Regularization (Ridge)</strong></p>
+<p>L2 regularization adds a penalty equal to the square of the magnitude of the coefficients. Unlike L1, L2 regularization does not result in sparse models and usually leads to smaller coefficients that are distributed more equally. L2 is effective at handling collinearity (high correlations among features) and controlling model complexity by keeping the coefficients small.</p>
+<section id="when-to-use-each" class="level4">
+<h4 class="anchored" data-anchor-id="when-to-use-each">When to Use Each</h4>
+<ul>
+<li><strong>L1 Regularization</strong>: When you have a large number of features and expect only a few of them to be important, L1 can help you increase model interpretability by keeping only the most significant features.</li>
+<li><strong>L2 Regularization</strong>: When model simplicity and prediction accuracy are paramount, and you have data with complex feature relationships.</li>
+</ul>
+</section>
+<section id="combining-l1-and-l2-regularization-elastic-net" class="level4">
+<h4 class="anchored" data-anchor-id="combining-l1-and-l2-regularization-elastic-net">Combining L1 and L2 Regularization (Elastic Net)</h4>
+<p>Sometimes, a combination of L1 and L2 regularization (known as Elastic Net) is used, which merges the penalties of L1 and L2 regularization. This method is particularly effective when there are correlations between parameters or when you have more features than training instances.</p>
+</section>
+</section>
+<section id="dropout" class="level3" data-number="18.3.2">
+<h3 data-number="18.3.2" class="anchored" data-anchor-id="dropout"><span class="header-section-number">18.3.2</span> Dropout</h3>
+<p>Dropout is a powerful and simple regularization method that has been widely used in deep learning. The fundamental idea behind dropout is to randomly “drop” or deactivate a subset of neurons in a neural network during the training process. This randomness helps prevent the neurons from co-adapting too much and relying on the presence of specific other neurons to correct their mistakes, which can lead to overfitting.</p>
+<section id="how-dropout-works" class="level4">
+<h4 class="anchored" data-anchor-id="how-dropout-works">How Dropout Works</h4>
+<p>In dropout, during each training step, each neuron (including input neurons but typically excluding output neurons) has a probability <span class="math inline">\(p\)</span> of being temporarily “dropped out,” meaning it is completely ignored during this step, but it may be active during the next step. The probability <span class="math inline">\(p\)</span> is called the dropout rate, and it’s a hyperparameter that can be tuned. Common values are 0.2 to 0.5. This randomness introduces noise into the output of a layer, simulating the effect of training many different networks. At test time, no neurons are dropped out. Instead, their outputs are adjusted by a factor equal to the dropout rate to balance the larger number of active units during training.</p>
+</section>
+<section id="benefits-of-dropout" class="level4">
+<h4 class="anchored" data-anchor-id="benefits-of-dropout">Benefits of Dropout</h4>
+<ol type="1">
+<li><p><strong>Reduces Overfitting</strong>: Dropout prevents units from co-adapting too closely. By dropping different sets of neurons, it ensures that the network does not rely on any single neuron for correct output. This reduces the risk of overfitting on the training data.</p></li>
+<li><p><strong>Approximates Training Many Models</strong>: Each iteration with a different set of neurons dropped can be seen as training a different neural network. At test time, using the unthinned network is akin to averaging the predictions of all these thinned networks.</p></li>
+<li><p><strong>Cost-effective Ensemble Technique</strong>: While training numerous models in an ensemble can be computationally expensive, dropout provides a cheaper and more resource-efficient approximation to this process.</p></li>
+</ol>
+</section>
+<section id="considerations-when-using-dropout" class="level4">
+<h4 class="anchored" data-anchor-id="considerations-when-using-dropout">Considerations When Using Dropout</h4>
+<ul>
+<li><strong>Choosing the Right Dropout Rate</strong>: The dropout rate is a hyperparameter that can significantly affect the performance of a model. It often requires tuning using a validation set or using hyperparameter optimization techniques.</li>
+<li><strong>Impact on Training Time</strong>: Because dropout involves only a subset of neurons during each training step, it can sometimes require a longer training period to converge.</li>
+<li><strong>Use with Other Regularization Techniques</strong>: Dropout can be effectively combined with other regularization techniques like L1 and L2 regularization to further enhance the generalization ability of the model.</li>
+</ul>
+<p>By implementing dropout correctly, you can significantly improve the robustness and generalization of deep learning models, especially in complex tasks where overfitting is a significant concern.</p>
+</section>
+</section>
+</section>
+<section id="hyperparameter-tuning" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="hyperparameter-tuning"><span class="header-section-number">18.4</span> Hyperparameter Tuning</h2>
+<section id="grid-search" class="level4">
+<h4 class="anchored" data-anchor-id="grid-search">Grid Search</h4>
+<p>Grid search is the most straightforward approach to hyperparameter tuning. It involves specifying a grid of all possible combinations of hyperparameters and evaluating the model’s performance for each combination. This method is exhaustive and ensures that the best combination is selected. However, grid search can be computationally expensive, especially when the hyperparameter space is large or when the model evaluation is time-consuming.</p>
+</section>
+<section id="random-search" class="level4">
+<h4 class="anchored" data-anchor-id="random-search">Random Search</h4>
+<p>Random search improves over grid search by selecting random combinations of the hyperparameters to evaluate. While this method does not guarantee finding the best combination as grid search does, it is more efficient, especially in high-dimensional spaces where it’s unlikely that the best hyperparameters lie on a grid. Random search can often find a good combination much faster than grid search.</p>
+</section>
+<section id="bayesian-optimization" class="level4">
+<h4 class="anchored" data-anchor-id="bayesian-optimization">Bayesian Optimization</h4>
+<p>Bayesian optimization is a mor e sophisticated method that models the hyperparameter tuning process as a Bayesian inference problem. It builds a probabilistic model of the function mapping from hyperparameter values to the target evaluated metric. The algorithm then uses this model to make intelligent decisions about which hyperparameters to evaluate next. This method is particularly useful when evaluations of the model are expensive, as it significantly reduces the number of trials needed to find a good set of hyperparameters.</p>
+</section>
+<section id="gradient-based-optimization" class="level4">
+<h4 class="anchored" data-anchor-id="gradient-based-optimization">Gradient-based Optimization</h4>
+<p>Some newer techniques involve using gradient information to optimize hyperparameters. This approach is typically used when hyperparameters are continuous and differentiable, allowing the optimization process to leverage gradients to more quickly converge to optimal values. This method can be very efficient but is dependent on the availability of gradients.</p>
+</section>
+</section>
+<section id="stopping-rules" class="level2" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="stopping-rules"><span class="header-section-number">18.5</span> Stopping Rules</h2>
+<p>Stopping rules in machine learning are criteria or methods used to decide when to halt the training process of an algorithm. The primary aim of these rules is to ensure that a model does not overtrain on the dataset, which can lead to overfitting. Overfitting occurs when a model learns the training data too well, including its noise and outliers, making it perform poorly on unseen data.</p>
+<section id="early-stopping" class="level3" data-number="18.5.1">
+<h3 data-number="18.5.1" class="anchored" data-anchor-id="early-stopping"><span class="header-section-number">18.5.1</span> Early Stopping:</h3>
+<p>One of the most common stopping rules is early stopping. This method involves monitoring the model’s performance on a validation set at each epoch (i.e., a full iteration over the entire training dataset). If the model’s performance on the validation set starts to degrade, or fails to improve for a predefined number of consecutive epochs, the training is halted. The logic behind early stopping is that the model’s ability to generalize (perform well on unseen data) starts to decline after a certain point as it begins to memorize the training data rather than learning to generalize from it.</p>
+<section id="how-early-stopping-works" class="level4">
+<h4 class="anchored" data-anchor-id="how-early-stopping-works">How Early Stopping Works</h4>
+<ul>
+<li><strong>Monitoring Metric:</strong> Typically, a performance metric such as validation loss is monitored.</li>
+<li><strong>Patience:</strong> This is a hyperparameter that defines the number of epochs to wait before stopping, after the metric has stopped improving. This parameter is crucial as it prevents the model from stopping too early and allows some room for potential recovery in model performance.</li>
+<li><strong>Restore Best Weights:</strong> Often, the configuration of the model weights that achieved the best performance on the validation set is restored at the end of training. This ensures that the model does not retain overfitted weights.</li>
+</ul>
+</section>
+<section id="benefits-of-early-stopping" class="level4">
+<h4 class="anchored" data-anchor-id="benefits-of-early-stopping">Benefits of Early Stopping</h4>
+<ul>
+<li><strong>Prevents Overfitting:</strong> By halting the training process before the model starts to overfit, early stopping helps maintain the model’s generalizability.</li>
+<li><strong>Saves Resources:</strong> Early stopping can reduce computational costs by reducing the number of epochs for which the model needs to be trained.</li>
+<li><strong>Improves Experimentation:</strong> Reduces the time to experiment with different model architectures and hyperparameters since each experiment runs only as long as it remains productive.</li>
+</ul>
+<p>Implementing effective stopping rules such as early stopping is crucial for developing robust machine learning models that generalize well to new, unseen data. By judiciously choosing when to halt the training process, practitioners can avoid the pitfalls of overfitting while optimizing the computational efficiency of their model training processes.</p>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level2" data-number="18.6">
+<h2 data-number="18.6" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">18.6</span> Conclusion</h2>
+<p>Techniques and methodologies such as regularization (both L1 and L2), dropout, and hyperparameter tuning through methods like grid search, random search, and Bayesian optimization provide a toolbox for machine learning practitioners to refine their models’ performance. These methods not only enhance the predictability and stability of the models but also ensure that they remain practical and efficient across various datasets and under different conditions.</p>
+<p>Moreover, the incorporation of early stopping as a practical approach in training workflows exemplifies the evolving strategies in machine learning that prioritize computational efficiency and model efficacy. The ability to halt training at an optimal point saves resources and protects the model from overlearning and potential degradation in performance on new data.</p>
+<p>In conclusion, the combination of these techniques represents a comprehensive approach towards building, tuning, and deploying machine learning models that are not only accurate but also resilient and adaptable. As the field continues to evolve, these strategies will undoubtedly be refined, and new techniques will emerge, further enhancing the capability of machine learning models to learn effectively and efficiently.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+
+/* update total correct if #webex-total_correct exists */
+update_total_correct = function() {
+  console.log("webex: update total_correct");
+
+  var t = document.getElementsByClassName("webex-total_correct");
+  for (var i = 0; i < t.length; i++) {
+    p = t[i].parentElement;
+    var correct = p.getElementsByClassName("webex-correct").length;
+    var solvemes = p.getElementsByClassName("webex-solveme").length;
+    var radiogroups = p.getElementsByClassName("webex-radiogroup").length;
+    var selects = p.getElementsByClassName("webex-select").length;
+
+    t[i].innerHTML = correct + " of " + (solvemes + radiogroups + selects) + " correct";
+  }
+}
+
+/* webex-solution button toggling function */
+b_func = function() {
+  console.log("webex: toggle hide");
+
+  var cl = this.parentElement.classList;
+  if (cl.contains('open')) {
+    cl.remove("open");
+  } else {
+    cl.add("open");
+  }
+}
+
+/* check answers */
+check_func = function() {
+  console.log("webex: check answers");
+
+  var cl = this.parentElement.classList;
+  if (cl.contains('unchecked')) {
+    cl.remove("unchecked");
+    this.innerHTML = "Hide Answers";
+  } else {
+    cl.add("unchecked");
+    this.innerHTML = "Show Answers";
+  }
+}
+
+/* function for checking solveme answers */
+solveme_func = function(e) {
+  console.log("webex: check solveme");
+
+  var real_answers = JSON.parse(this.dataset.answer);
+  var my_answer = this.value;
+  var cl = this.classList;
+  if (cl.contains("ignorecase")) {
+    my_answer = my_answer.toLowerCase();
+  }
+  if (cl.contains("nospaces")) {
+    my_answer = my_answer.replace(/ /g, "")
+  }
+
+  if (my_answer == "") {
+    cl.remove("webex-correct");
+    cl.remove("webex-incorrect");
+  } else if (real_answers.includes(my_answer)) {
+    cl.add("webex-correct");
+    cl.remove("webex-incorrect");
+  } else {
+    cl.add("webex-incorrect");
+    cl.remove("webex-correct");
+  }
+
+  // match numeric answers within a specified tolerance
+  if(this.dataset.tol > 0){
+    var tol = JSON.parse(this.dataset.tol);
+    var matches = real_answers.map(x => Math.abs(x - my_answer) < tol)
+    if (matches.reduce((a, b) => a + b, 0) > 0) {
+      cl.add("webex-correct");
+    } else {
+      cl.remove("webex-correct");
+    }
+  }
+
+  // added regex bit
+  if (cl.contains("regex")){
+    answer_regex = RegExp(real_answers.join("|"))
+    if (answer_regex.test(my_answer)) {
+      cl.add("webex-correct");
+    }
+  }
+
+  update_total_correct();
+}
+
+/* function for checking select answers */
+select_func = function(e) {
+  console.log("webex: check select");
+
+  var cl = this.classList
+
+  /* add style */
+  cl.remove("webex-incorrect");
+  cl.remove("webex-correct");
+  if (this.value == "answer") {
+    cl.add("webex-correct");
+  } else if (this.value != "blank") {
+    cl.add("webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+/* function for checking radiogroups answers */
+radiogroups_func = function(e) {
+  console.log("webex: check radiogroups");
+
+  var checked_button = document.querySelector('input[name=' + this.id + ']:checked');
+  var cl = checked_button.parentElement.classList;
+  var labels = checked_button.parentElement.parentElement.children;
+
+  /* get rid of styles */
+  for (i = 0; i < labels.length; i++) {
+    labels[i].classList.remove("webex-incorrect");
+    labels[i].classList.remove("webex-correct");
+  }
+
+  /* add style */
+  if (checked_button.value == "answer") {
+    cl.add("webex-correct");
+  } else {
+    cl.add("webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+window.onload = function() {
+  console.log("webex onload");
+  /* set up solution buttons */
+  var buttons = document.getElementsByTagName("button");
+
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].parentElement.classList.contains('webex-solution')) {
+      buttons[i].onclick = b_func;
+    }
+  }
+
+  var check_sections = document.getElementsByClassName("webex-check");
+  console.log("check:", check_sections.length);
+  for (var i = 0; i < check_sections.length; i++) {
+    check_sections[i].classList.add("unchecked");
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "Show Answers";
+    btn.classList.add("webex-check-button");
+    btn.onclick = check_func;
+    check_sections[i].appendChild(btn);
+
+    let spn = document.createElement("span");
+    spn.classList.add("webex-total_correct");
+    check_sections[i].appendChild(spn);
+  }
+
+  /* set up webex-solveme inputs */
+  var solveme = document.getElementsByClassName("webex-solveme");
+
+  for (var i = 0; i < solveme.length; i++) {
+    /* make sure input boxes don't auto-anything */
+    solveme[i].setAttribute("autocomplete","off");
+    solveme[i].setAttribute("autocorrect", "off");
+    solveme[i].setAttribute("autocapitalize", "off");
+    solveme[i].setAttribute("spellcheck", "false");
+    solveme[i].value = "";
+
+    /* adjust answer for ignorecase or nospaces */
+    var cl = solveme[i].classList;
+    var real_answer = solveme[i].dataset.answer;
+    if (cl.contains("ignorecase")) {
+      real_answer = real_answer.toLowerCase();
+    }
+    if (cl.contains("nospaces")) {
+      real_answer = real_answer.replace(/ /g, "");
+    }
+    solveme[i].dataset.answer = real_answer;
+
+    /* attach checking function */
+    solveme[i].onkeyup = solveme_func;
+    solveme[i].onchange = solveme_func;
+
+    solveme[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+  }
+
+  /* set up radiogroups */
+  var radiogroups = document.getElementsByClassName("webex-radiogroup");
+  for (var i = 0; i < radiogroups.length; i++) {
+    radiogroups[i].onchange = radiogroups_func;
+  }
+
+  /* set up selects */
+  var selects = document.getElementsByClassName("webex-select");
+  for (var i = 0; i < selects.length; i++) {
+    selects[i].onchange = select_func;
+    selects[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+  }
+
+  update_total_correct();
+}
+
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./17_MLP.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multi-Layer Perceptron</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">STA 3311</div>
+  </div>
+</footer>
+
+
+
+</body></html>
