@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>STA 3311 Sports Analytics II - 20&nbsp; Advanced Ranking Methods</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./19_Rankings.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="webex.css">
+</head>
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./20_Rankings2.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Advanced Ranking Methods</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./"></a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Intro to Data Manipulation with <code>dplyr</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_Stringr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">String, Dates, and Joins</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_Tidymodels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to Tidymodels</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Linear Regression with Regularization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_Logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Logistic Regression with Regularization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_Mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Mixed Effects Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_Data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Obtaining Sport Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_Web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Web Scraping with Rvest</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction to Machine Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_Random.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Random Forests</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_Spatial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Visualization of Player Tracking Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">K-Nearest Neighbors</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13_clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_dimension.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Dimensionality Reduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_SVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Support Vector Machines</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_DBSCAN.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">DBSCAN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./17_MLP.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Multi-Layer Perceptron</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./18_Fitting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Fitting and Overfitting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./19_Rankings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Intro to Rankings</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20_Rankings2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Advanced Ranking Methods</span></span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">20.1</span> Introduction</a></li>
+  <li>
+<a href="#elo-ratings" id="toc-elo-ratings" class="nav-link" data-scroll-target="#elo-ratings"><span class="header-section-number">20.2</span> Elo Ratings</a>
+  <ul class="collapse">
+<li><a href="#how-elo-ratings-work" id="toc-how-elo-ratings-work" class="nav-link" data-scroll-target="#how-elo-ratings-work"><span class="header-section-number">20.2.1</span> How Elo Ratings Work</a></li>
+  <li><a href="#example-10-team-soccer-league-incomplete-competition" id="toc-example-10-team-soccer-league-incomplete-competition" class="nav-link" data-scroll-target="#example-10-team-soccer-league-incomplete-competition"><span class="header-section-number">20.2.2</span> Example: 10-Team Soccer League (Incomplete Competition)</a></li>
+  <li><a href="#extensions-and-variants" id="toc-extensions-and-variants" class="nav-link" data-scroll-target="#extensions-and-variants"><span class="header-section-number">20.2.3</span> Extensions and Variants</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">20.2.4</span> Limitations</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#keener-method" id="toc-keener-method" class="nav-link" data-scroll-target="#keener-method"><span class="header-section-number">20.3</span> Keener Method</a>
+  <ul class="collapse">
+<li><a href="#conceptual-overview" id="toc-conceptual-overview" class="nav-link" data-scroll-target="#conceptual-overview"><span class="header-section-number">20.3.1</span> Conceptual Overview</a></li>
+  <li><a href="#technical-details" id="toc-technical-details" class="nav-link" data-scroll-target="#technical-details"><span class="header-section-number">20.3.2</span> Technical Details</a></li>
+  <li><a href="#interpretation-of-keener-ratings" id="toc-interpretation-of-keener-ratings" class="nav-link" data-scroll-target="#interpretation-of-keener-ratings"><span class="header-section-number">20.3.3</span> Interpretation of Keener Ratings</a></li>
+  <li><a href="#applications-and-considerations" id="toc-applications-and-considerations" class="nav-link" data-scroll-target="#applications-and-considerations"><span class="header-section-number">20.3.4</span> Applications and Considerations</a></li>
+  <li><a href="#example-in-r-using-comperank" id="toc-example-in-r-using-comperank" class="nav-link" data-scroll-target="#example-in-r-using-comperank"><span class="header-section-number">20.3.5</span> Example in R (using <code>comperank</code>)</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#markov-method" id="toc-markov-method" class="nav-link" data-scroll-target="#markov-method"><span class="header-section-number">20.4</span> Markov Method</a>
+  <ul class="collapse">
+<li><a href="#conceptual-overview-1" id="toc-conceptual-overview-1" class="nav-link" data-scroll-target="#conceptual-overview-1"><span class="header-section-number">20.4.1</span> Conceptual Overview</a></li>
+  <li><a href="#step-by-step-procedure" id="toc-step-by-step-procedure" class="nav-link" data-scroll-target="#step-by-step-procedure"><span class="header-section-number">20.4.2</span> Step-by-Step Procedure</a></li>
+  <li><a href="#applications-and-advantages" id="toc-applications-and-advantages" class="nav-link" data-scroll-target="#applications-and-advantages"><span class="header-section-number">20.4.3</span> Applications and Advantages</a></li>
+  <li><a href="#example-in-r-using-comperank-1" id="toc-example-in-r-using-comperank-1" class="nav-link" data-scroll-target="#example-in-r-using-comperank-1"><span class="header-section-number">20.4.4</span> Example in R (using <code>comperank</code>)</a></li>
+  <li><a href="#relationship-to-other-ranking-methods" id="toc-relationship-to-other-ranking-methods" class="nav-link" data-scroll-target="#relationship-to-other-ranking-methods"><span class="header-section-number">20.4.5</span> Relationship to Other Ranking Methods</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#the-offense-defense-method" id="toc-the-offense-defense-method" class="nav-link" data-scroll-target="#the-offense-defense-method"><span class="header-section-number">20.5</span> The Offense-Defense Method</a>
+  <ul class="collapse">
+<li><a href="#conceptual-overview-2" id="toc-conceptual-overview-2" class="nav-link" data-scroll-target="#conceptual-overview-2"><span class="header-section-number">20.5.1</span> Conceptual Overview</a></li>
+  <li><a href="#step-by-step-procedure-1" id="toc-step-by-step-procedure-1" class="nav-link" data-scroll-target="#step-by-step-procedure-1"><span class="header-section-number">20.5.2</span> Step-by-Step Procedure</a></li>
+  <li><a href="#example-in-r-using-comperank-2" id="toc-example-in-r-using-comperank-2" class="nav-link" data-scroll-target="#example-in-r-using-comperank-2"><span class="header-section-number">20.5.3</span> Example in R (using <code>comperank</code>)</a></li>
+  <li><a href="#applications-and-advantages-1" id="toc-applications-and-advantages-1" class="nav-link" data-scroll-target="#applications-and-advantages-1"><span class="header-section-number">20.5.4</span> Applications and Advantages</a></li>
+  <li><a href="#comparison-with-other-methods" id="toc-comparison-with-other-methods" class="nav-link" data-scroll-target="#comparison-with-other-methods"><span class="header-section-number">20.5.5</span> Comparison with Other Methods</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Advanced Ranking Methods</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><blockquote class="blockquote">
+<p>“Baker had crushed the cartilage in my ribs and brutally gashed my forehead. I also suffered a concussion and a cracked sternum. That photo would later become one of the most enduring images in sports history. What a hell of a way to get famous!” - Y.A. Tittle</p>
+</blockquote>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="pics/tittle.png" class="img-fluid figure-img" width="300"></p>
+<figcaption class="figure-caption">New York Giants quarterback Y.A. Tittle attempts to get up after being slammed to the ground by Steelers defensive lineman John Baker in a Sep 20, 1964 game. Tittle was released by the 49ers after he had gotten “too old” and “too slow”. After going to the Giants, Tittle led New York to three consecutlve NFL championship games. This photo shows the aging Tittle who had finally ran out of steam. He would announce his retirement at the end of the season.</figcaption></figure>
+</div>
+<section id="introduction" class="level2" data-number="20.1"><h2 data-number="20.1" class="anchored" data-anchor-id="introduction">
+<span class="header-section-number">20.1</span> Introduction</h2>
+<p>Building upon foundational ranking methods like Massey and Colley, this chapter explores advanced techniques that accommodate more complex competition structures and dynamic performance assessments. We delve into methods such as Elo ratings, Keener, Markov, and Offense-Defense, utilizing R packages like <code>comperank</code> and <code>elo</code> to implement these models. These methods are particularly useful in scenarios where competitors do not all face each other, and where performance evolves over time.</p>
+</section><section id="elo-ratings" class="level2" data-number="20.2"><h2 data-number="20.2" class="anchored" data-anchor-id="elo-ratings">
+<span class="header-section-number">20.2</span> Elo Ratings</h2>
+<p>The Elo rating system was originally designed for ranking chess players, where competitors are paired in head-to-head contests and victory is not always guaranteed for the higher-rated player. The method gained popularity in many competitive fields because of its simple, adaptive, and intuitive formulation. Unlike methods that assume balanced schedules or complete round-robins, Elo ratings dynamically adjust after every match based on expected performance and actual outcomes. This makes Elo particularly appealing for sports environments where schedules are irregular and competitors’ performances change over time.</p>
+<p>Today, Elo ratings are widely used across various sports, including soccer (club and international competitions), basketball, and tennis. Moreover, major outlets like FiveThirtyEight use modified Elo models to power predictive rankings for leagues like the NBA and NFL.</p>
+<section id="how-elo-ratings-work" class="level3" data-number="20.2.1"><h3 data-number="20.2.1" class="anchored" data-anchor-id="how-elo-ratings-work">
+<span class="header-section-number">20.2.1</span> How Elo Ratings Work</h3>
+<p>At its core, the Elo formula updates ratings according to:</p>
+<p><span class="math display">\[
+R_{\text{new}} = R_{\text{old}} + K \cdot (S - E)
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li>
+<span class="math inline">\(R_{\text{old}}\)</span> is the player’s (or team’s) pre-match rating.</li>
+<li>
+<span class="math inline">\(K\)</span> is the maximum possible adjustment per game (chosen by the analyst).</li>
+<li>
+<span class="math inline">\(S\)</span> is the actual score (1 for win, 0.5 for draw, 0 for loss).</li>
+<li>
+<span class="math inline">\(E\)</span> is the expected score calculated from the pre-match ratings.</li>
+</ul>
+<p>The expected score <span class="math inline">\(E\)</span> is determined by the logistic function:</p>
+<p><span class="math display">\[
+E = \frac{1}{1 + 10^{(R_{\text{opponent}} - R_{\text{own}})/400}}
+\]</span></p>
+<p>Thus, defeating a much higher-rated opponent results in a substantial increase in rating, while beating a much lower-rated opponent results in only a modest gain.</p>
+</section><section id="example-10-team-soccer-league-incomplete-competition" class="level3" data-number="20.2.2"><h3 data-number="20.2.2" class="anchored" data-anchor-id="example-10-team-soccer-league-incomplete-competition">
+<span class="header-section-number">20.2.2</span> Example: 10-Team Soccer League (Incomplete Competition)</h3>
+<p>Consider a soccer league composed of 10 teams (labeled “Team A” through “Team J”) playing an irregular schedule of 35 matches. Each match has a winner or ends in a draw. Not every team faces every other team, reflecting the typical structure of many sports leagues.</p>
+<p>Let’s simulate this using R and the <strong>elo</strong> package.</p>
+<section id="data-setup" class="level4"><h4 class="anchored" data-anchor-id="data-setup">Data Setup</h4>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eheinzen/elo">elo</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Define match results</span></span>
+<span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
+<span>  home_team <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Team I"</span>, <span class="st">"Team G"</span>, <span class="st">"Team G"</span>, <span class="st">"Team J"</span>, <span class="st">"Team E"</span>,</span>
+<span>                <span class="st">"Team H"</span>, <span class="st">"Team C"</span>, <span class="st">"Team D"</span>, <span class="st">"Team B"</span>, <span class="st">"Team I"</span>,</span>
+<span>                <span class="st">"Team A"</span>, <span class="st">"Team J"</span>, <span class="st">"Team F"</span>, <span class="st">"Team D"</span>, <span class="st">"Team F"</span>,</span>
+<span>                <span class="st">"Team E"</span>, <span class="st">"Team A"</span>, <span class="st">"Team F"</span>, <span class="st">"Team G"</span>, <span class="st">"Team C"</span>,</span>
+<span>                <span class="st">"Team I"</span>, <span class="st">"Team H"</span>, <span class="st">"Team J"</span>, <span class="st">"Team H"</span>, <span class="st">"Team D"</span>,</span>
+<span>                <span class="st">"Team A"</span>, <span class="st">"Team C"</span>, <span class="st">"Team E"</span>, <span class="st">"Team B"</span>, <span class="st">"Team F"</span>,</span>
+<span>                <span class="st">"Team I"</span>, <span class="st">"Team B"</span>, <span class="st">"Team H"</span>, <span class="st">"Team J"</span>, <span class="st">"Team G"</span><span class="op">)</span>,</span>
+<span>  away_team <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Team J"</span>, <span class="st">"Team H"</span>, <span class="st">"Team E"</span>, <span class="st">"Team C"</span>, <span class="st">"Team H"</span>,</span>
+<span>                <span class="st">"Team F"</span>, <span class="st">"Team J"</span>, <span class="st">"Team F"</span>, <span class="st">"Team H"</span>, <span class="st">"Team G"</span>,</span>
+<span>                <span class="st">"Team F"</span>, <span class="st">"Team B"</span>, <span class="st">"Team G"</span>, <span class="st">"Team A"</span>, <span class="st">"Team I"</span>,</span>
+<span>                <span class="st">"Team B"</span>, <span class="st">"Team B"</span>, <span class="st">"Team C"</span>, <span class="st">"Team J"</span>, <span class="st">"Team G"</span>,</span>
+<span>                <span class="st">"Team D"</span>, <span class="st">"Team A"</span>, <span class="st">"Team E"</span>, <span class="st">"Team B"</span>, <span class="st">"Team G"</span>,</span>
+<span>                <span class="st">"Team D"</span>, <span class="st">"Team H"</span>, <span class="st">"Team F"</span>, <span class="st">"Team C"</span>, <span class="st">"Team A"</span>,</span>
+<span>                <span class="st">"Team D"</span>, <span class="st">"Team A"</span>, <span class="st">"Team E"</span>, <span class="st">"Team F"</span>, <span class="st">"Team H"</span><span class="op">)</span>,</span>
+<span>  home_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">2</span>,<span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">5</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span>  away_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">3</span>,<span class="fl">2</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="fitting-elo-ratings" class="level4"><h4 class="anchored" data-anchor-id="fitting-elo-ratings">Fitting Elo Ratings</h4>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Run Elo model</span></span>
+<span><span class="va">elo_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://eheinzen.github.io/elo/reference/elo.run.html">elo.run</a></span><span class="op">(</span><span class="fu"><a href="https://eheinzen.github.io/elo/reference/score.html">score</a></span><span class="op">(</span><span class="va">home_score</span>, <span class="va">away_score</span><span class="op">)</span> <span class="op">~</span> <span class="va">home_team</span> <span class="op">+</span> <span class="va">away_team</span>, data <span class="op">=</span> <span class="va">matches</span>, k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display final Elo ratings</span></span>
+<span><span class="va">final_ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">elo_results</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">final_ratings</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   team.A team.B       p.A wins.A      update.A      update.B    elo.A    elo.B
+1  Team I Team J 0.5000000    0.0 -1.000000e+01  1.000000e+01 1490.000 1510.000
+2  Team G Team H 0.5000000    0.0 -1.000000e+01  1.000000e+01 1490.000 1510.000
+3  Team G Team E 0.4856128    1.0  1.028774e+01 -1.028774e+01 1500.288 1489.712
+4  Team J Team C 0.5143872    1.0  9.712256e+00 -9.712256e+00 1519.712 1490.288
+5  Team E Team H 0.4708367    0.5  5.832654e-01 -5.832654e-01 1490.296 1509.417
+6  Team H Team F 0.5135485    0.5 -2.709691e-01  2.709691e-01 1509.146 1500.271
+7  Team C Team J 0.4577557    1.0  1.084489e+01 -1.084489e+01 1501.133 1508.867
+8  Team D Team F 0.4996100    0.5  7.799115e-03 -7.799115e-03 1500.008 1500.263
+9  Team B Team H 0.4868412    1.0  1.026318e+01 -1.026318e+01 1510.263 1498.883
+10 Team I Team G 0.4851991    1.0  1.029602e+01 -1.029602e+01 1500.296 1489.992
+11 Team A Team F 0.4996213    1.0  1.000757e+01 -1.000757e+01 1510.008 1490.256
+12 Team J Team B 0.4979913    0.0 -9.959826e+00  9.959826e+00 1498.908 1520.223
+13 Team F Team G 0.5003797    1.0  9.992405e+00 -9.992405e+00 1500.248 1479.999
+14 Team D Team A 0.4856131    1.0  1.028774e+01 -1.028774e+01 1510.296 1499.720
+15 Team F Team I 0.4999309    0.0 -9.998618e+00  9.998618e+00 1490.249 1510.295
+16 Team E Team B 0.4570371    1.0  1.085926e+01 -1.085926e+01 1501.155 1509.364
+17 Team A Team B 0.4861249    0.0 -9.722497e+00  9.722497e+00 1489.997 1519.086
+18 Team F Team C 0.4843429    0.0 -9.686857e+00  9.686857e+00 1480.563 1510.819
+19 Team G Team J 0.4728157    0.0 -9.456314e+00  9.456314e+00 1470.543 1508.364
+20 Team C Team G 0.5577043    0.0 -1.115409e+01  1.115409e+01 1499.665 1481.697
+21 Team I Team D 0.4999987    0.5  2.589996e-05 -2.589996e-05 1510.295 1510.296
+22 Team H Team A 0.5127841    0.0 -1.025568e+01  1.025568e+01 1488.627 1500.253
+23 Team J Team E 0.5103732    0.0 -1.020746e+01  1.020746e+01 1498.156 1511.362
+24 Team H Team B 0.4562775    0.0 -9.125549e+00  9.125549e+00 1479.501 1528.212
+25 Team D Team G 0.5410637    0.0 -1.082127e+01  1.082127e+01 1499.474 1492.518
+26 Team A Team D 0.5011208    1.0  9.977585e+00 -9.977585e+00 1510.231 1489.497
+27 Team C Team H 0.5289859    0.0 -1.057972e+01  1.057972e+01 1489.086 1490.081
+28 Team E Team F 0.5442086    0.5 -8.841723e-01  8.841723e-01 1510.478 1481.447
+29 Team B Team C 0.5560702    0.5 -1.121403e+00  1.121403e+00 1527.090 1490.207
+30 Team F Team A 0.4586711    0.5  8.265773e-01 -8.265773e-01 1482.273 1509.404
+31 Team I Team D 0.5298950    0.0 -1.059790e+01  1.059790e+01 1499.697 1500.095
+32 Team B Team A 0.5254308    0.0 -1.050862e+01  1.050862e+01 1516.582 1519.913
+33 Team H Team E 0.4706800    0.5  5.863992e-01 -5.863992e-01 1490.667 1509.892
+34 Team J Team F 0.5228417    1.0  9.543165e+00 -9.543165e+00 1507.700 1472.730
+35 Team G Team H 0.5026636    0.5 -5.327241e-02  5.327241e-02 1492.465 1490.721</code></pre>
+</div>
+</div>
+</section><section id="interpreting-results" class="level4"><h4 class="anchored" data-anchor-id="interpreting-results">Interpreting Results</h4>
+<p>The final ratings reflect each team’s strength after all matches. Teams that consistently won against tough opponents rise in the rankings, while teams with losses—especially against lower-rated teams—fall. Elo ratings also reward close games; for example, a narrow loss against a top team is penalized less harshly than a blowout loss.</p>
+<p>This example captures key features of the Elo system:</p>
+<ul>
+<li>Dynamic adjustments after each match.</li>
+<li>Sensitivity to opponent strength.</li>
+<li>Accommodation of incomplete schedules.</li>
+</ul>
+<p>A typical plot that illustrates the elo ratings is the <strong>Elo Rating Progression</strong> plot.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="20_Rankings2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+<!-- ### Example: NCAA football data -->
+<!-- Let's use the NCAA football data from `cfbfastR` library used in the last chapter. -->
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- Sys.setenv(CFBD_API_KEY = "0Og5qeZfFvk4e9yrJP4LqGZG/YLNFPRCzXU1QzQayoRTyxy3STJvzB+aJHwSI1gu") -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- library(cfbfastR) -->
+<!-- games = cfbd_game_info(year = 2023) |> -->
+<!--   select(home_team, away_team, home_points, away_points) -->
+<!-- # Create long format for comperank -->
+<!-- matches = games |> -->
+<!--   mutate(game = row_number()) |>  -->
+<!--   pivot_longer(cols = c(home_team, away_team, home_points, away_points), -->
+<!--                names_to = c("location", ".value"), -->
+<!--                names_sep = "_")|> -->
+<!--   rename(player = team, score = points) |> -->
+<!--   select(game, player, score) -->
+<!-- ``` -->
+</section></section><section id="extensions-and-variants" class="level3" data-number="20.2.3"><h3 data-number="20.2.3" class="anchored" data-anchor-id="extensions-and-variants">
+<span class="header-section-number">20.2.3</span> Extensions and Variants</h3>
+<p>In sports analytics, analysts often modify the basic Elo model to better suit particular contexts. Examples include:</p>
+<ul>
+<li>
+<strong>Home Advantage</strong>: Adding extra rating points for home teams.</li>
+<li>
+<strong>Margin of Victory</strong>: Incorporating goal differential to adjust the rating impact.</li>
+<li>
+<strong>Regression to Mean</strong>: Reducing ratings between seasons to reflect team changes.</li>
+<li>
+<strong>Seasonal Reset</strong>: Applying adjustments or resets between seasons or tournaments.</li>
+</ul>
+<p>For instance, soccer models often add 50–100 Elo points to home teams to reflect home-field advantage. Basketball Elo systems frequently include margin of victory.</p>
+</section><section id="limitations" class="level3" data-number="20.2.4"><h3 data-number="20.2.4" class="anchored" data-anchor-id="limitations">
+<span class="header-section-number">20.2.4</span> Limitations</h3>
+<ul>
+<li>Head-to-head based, thus indirect comparisons (transitivity) are weaker.</li>
+<li>Choice of K value and logistic scale can affect stability.</li>
+<li>Does not explicitly model margin of victory unless modified.</li>
+</ul></section></section><section id="keener-method" class="level2" data-number="20.3"><h2 data-number="20.3" class="anchored" data-anchor-id="keener-method">
+<span class="header-section-number">20.3</span> Keener Method</h2>
+<p>While methods such as Elo and Massey are powerful and intuitive, they primarily rely on win-loss outcomes or points scored to infer rankings. However, in many sports competitions, especially those with incomplete schedules, it can be advantageous to incorporate not just whether a team won, but <strong>who they defeated and how strongly they performed relative to their opponents</strong>.</p>
+<p>The <strong>Keener Method</strong>, developed by James Keener (1993), was proposed to address this issue using <strong>linear algebra and matrix theory</strong>. This method constructs a <strong>head-to-head matrix</strong> where each element reflects the strength of a team based on its performance against other teams. Ratings are then computed as the <strong>dominant eigenvector</strong> of this matrix, which captures both direct and indirect relationships among competitors.</p>
+<p>This eigenvector-based approach is inspired by models used in social sciences and economics (such as PageRank in internet search algorithms), where the importance of an individual or entity depends not only on direct outcomes but also on the status of those they are connected to.</p>
+<section id="conceptual-overview" class="level3" data-number="20.3.1"><h3 data-number="20.3.1" class="anchored" data-anchor-id="conceptual-overview">
+<span class="header-section-number">20.3.1</span> Conceptual Overview</h3>
+<p>At its core, the Keener method proceeds as follows:</p>
+<ol type="1">
+<li><p><strong>Construct a head-to-head matrix <span class="math inline">\(S\)</span></strong> where each element <span class="math inline">\(S_{ij}\)</span> reflects how team <span class="math inline">\(i\)</span> performed against team <span class="math inline">\(j\)</span>.</p></li>
+<li><p><strong>Apply pairwise normalization</strong> to each entry, which accounts for the number of games played and the direction of competition: <span class="math display">\[
+a_{ij} = \frac{S_{ij} + 1}{S_{ij} + S_{ji} + 2}
+\]</span> This transformation ensures that the matrix entries are bounded between 0 and 1, and avoids extreme values from dominating the calculation.</p></li>
+<li><p><strong>Skew the values</strong> using a function to reduce the influence of outliers or lopsided results. This step softens unusually dominant or poor performances to avoid them having an outsized effect on the ratings.</p></li>
+<li><p><strong>Normalize the matrix</strong> to account for varying numbers of games played. A common approach divides each row by the number of games played by the corresponding team, ensuring that teams with fewer games do not receive artificially inflated ratings.</p></li>
+<li><p><strong>Ensure irreducibility</strong> by adding a small value to matrix entries if necessary. This guarantees that the matrix satisfies the mathematical requirements for the <strong>Perron-Frobenius theorem</strong>, which ensures a unique and strictly positive dominant eigenvector.</p></li>
+<li><p><strong>Compute the dominant eigenvector</strong> of the resulting matrix. This eigenvector contains the <strong>Keener ratings</strong>, with larger values indicating higher team rankings.</p></li>
+</ol></section><section id="technical-details" class="level3" data-number="20.3.2"><h3 data-number="20.3.2" class="anchored" data-anchor-id="technical-details">
+<span class="header-section-number">20.3.2</span> Technical Details</h3>
+<section id="step-1-building-the-head-to-head-matrix" class="level4"><h4 class="anchored" data-anchor-id="step-1-building-the-head-to-head-matrix">Step 1: Building the Head-to-Head Matrix</h4>
+<p>Each element <span class="math inline">\(S_{ij}\)</span> is calculated from game outcomes. Possible definitions of <span class="math inline">\(S_{ij}\)</span> include:</p>
+<ul>
+<li>Total points scored by team <span class="math inline">\(i\)</span> against team <span class="math inline">\(j\)</span>.</li>
+<li>Number of wins of team <span class="math inline">\(i\)</span> against team <span class="math inline">\(j\)</span>.</li>
+<li>Point differential (points scored minus points allowed).</li>
+</ul>
+<p>The choice of definition should reflect the nature of the sport and the goals of the ranking system.</p>
+</section><section id="step-2-pairwise-normalization" class="level4"><h4 class="anchored" data-anchor-id="step-2-pairwise-normalization">Step 2: Pairwise Normalization</h4>
+<p>Once the raw matrix is computed, it is normalized as:</p>
+<p><span class="math display">\[
+a_{ij} = \frac{S_{ij} + 1}{S_{ij} + S_{ji} + 2}
+\]</span></p>
+<p>This form has desirable properties:</p>
+<ul>
+<li>Avoids division by zero.</li>
+<li>Produces values between 0 and 1.</li>
+<li>Reflects competitive balance: if <span class="math inline">\(S_{ij} = S_{ji}\)</span>, then <span class="math inline">\(a_{ij} = 0.5\)</span>.</li>
+</ul></section><section id="step-3-skewing" class="level4"><h4 class="anchored" data-anchor-id="step-3-skewing">Step 3: Skewing</h4>
+<p>Sports outcomes can sometimes be extreme, with blowout wins or losses. To mitigate this, a skewing function can be applied:</p>
+<p><span class="math display">\[
+a_{ij} \rightarrow \text{skew_fun}(a_{ij})
+\]</span></p>
+<p>The default skewing function, <code><a href="https://rdrr.io/pkg/comperank/man/keener.html">skew_keener()</a></code>, compresses extreme values toward the center of the scale, which makes the matrix more stable and reduces the influence of anomalies.</p>
+</section><section id="step-4-normalization-for-unequal-games" class="level4"><h4 class="anchored" data-anchor-id="step-4-normalization-for-unequal-games">Step 4: Normalization for Unequal Games</h4>
+<p>In real-world sports, teams often play different numbers of games. To account for this, each row of the matrix is normalized:</p>
+<p><span class="math display">\[
+\text{Normalized } a_{ij} = \frac{a_{ij}}{\text{Number of games played by team } i}
+\]</span></p>
+<p>This ensures that teams playing more games do not receive unfairly higher ratings simply due to volume.</p>
+</section><section id="step-5-irreducibility" class="level4"><h4 class="anchored" data-anchor-id="step-5-irreducibility">Step 5: Irreducibility</h4>
+<p>The Perron-Frobenius theorem guarantees that a unique, strictly positive eigenvector exists only for irreducible matrices. To ensure this property, a small value (typically the smallest nonzero entry multiplied by a small constant <span class="math inline">\(\epsilon\)</span>) is added if necessary.</p>
+</section><section id="step-6-computing-ratings" class="level4"><h4 class="anchored" data-anchor-id="step-6-computing-ratings">Step 6: Computing Ratings</h4>
+<p>Finally, the <strong>Keener ratings</strong> are computed as the <strong>dominant eigenvector</strong> of the matrix:</p>
+<p><span class="math display">\[
+A \cdot \mathbf{r} = \lambda \cdot \mathbf{r}
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li>
+<span class="math inline">\(A\)</span> is the normalized and skewed Head-to-Head matrix.</li>
+<li>
+<span class="math inline">\(\mathbf{r}\)</span> is the rating vector.</li>
+<li>
+<span class="math inline">\(\lambda\)</span> is the dominant eigenvalue (not of primary interest).</li>
+</ul>
+<p>The rating vector <span class="math inline">\(\mathbf{r}\)</span> is scaled so that the ratings sum to 1 for interpretability.</p>
+</section></section><section id="interpretation-of-keener-ratings" class="level3" data-number="20.3.3"><h3 data-number="20.3.3" class="anchored" data-anchor-id="interpretation-of-keener-ratings">
+<span class="header-section-number">20.3.3</span> Interpretation of Keener Ratings</h3>
+<p>Higher values of the Keener rating indicate stronger teams, reflecting both:</p>
+<ul>
+<li>
+<strong>Direct performance</strong> (how well they did against other teams), and</li>
+<li>
+<strong>Indirect strength</strong> (how strong their opponents were).</li>
+</ul>
+<p>For example, defeating a strong team will improve a team’s rating more than defeating a weak team.</p>
+</section><section id="applications-and-considerations" class="level3" data-number="20.3.4"><h3 data-number="20.3.4" class="anchored" data-anchor-id="applications-and-considerations">
+<span class="header-section-number">20.3.4</span> Applications and Considerations</h3>
+<p>The Keener method is particularly useful in leagues or tournaments where:</p>
+<ul>
+<li>Teams play different numbers of games.</li>
+<li>The schedule is unbalanced.</li>
+<li>Margin of victory or opponent strength should be reflected.</li>
+</ul>
+<p>However, it assumes that performance is transitive and relatively stable, which may not hold in all sports or seasons.</p>
+</section><section id="example-in-r-using-comperank" class="level3" data-number="20.3.5"><h3 data-number="20.3.5" class="anchored" data-anchor-id="example-in-r-using-comperank">
+<span class="header-section-number">20.3.5</span> Example in R (using <code>comperank</code>)</h3>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/echasnovski/comperank">comperank</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/comperank/man/keener.html">rank_keener</a></span><span class="op">(</span><span class="va">ncaa2005</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">score1</span><span class="op">)</span>, keep_rating <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  player rating_keener ranking_keener
+  &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt;
+1 Duke          0.0671              5
+2 Miami         0.351               1
+3 UNC           0.158               4
+4 UVA           0.161               3
+5 VT            0.263               2</code></pre>
+</div>
+</div>
+</section></section><section id="markov-method" class="level2" data-number="20.4"><h2 data-number="20.4" class="anchored" data-anchor-id="markov-method">
+<span class="header-section-number">20.4</span> Markov Method</h2>
+<p>In competitive sports, it is often desirable to rank teams not only based on their win-loss records or the scores of individual games, but also in a way that reflects the <strong>flow of competition</strong> across the league. That is, when Team A beats Team B, and Team B beats Team C, this suggests that Team A should likely be rated above Team C, even if they never played each other directly.</p>
+<p>The <strong>Markov method</strong> captures this idea naturally using concepts from probability and linear algebra. Specifically, the method models competition as a <strong>Markov chain</strong>, where teams “pass along” strength or credit to those they lose to or defeat. The relative ranking of teams is then determined by the <strong>stationary distribution</strong> of this Markov chain, which indicates the long-run proportion of time the process would spend at each team if games continued indefinitely.</p>
+<p>By modeling competitions this way, the Markov method accounts not only for direct wins and losses, but also for the strength of teams defeated (and the strength of those losses), thus providing an elegant way to infer global rankings from local interactions.</p>
+<section id="conceptual-overview-1" class="level3" data-number="20.4.1"><h3 data-number="20.4.1" class="anchored" data-anchor-id="conceptual-overview-1">
+<span class="header-section-number">20.4.1</span> Conceptual Overview</h3>
+<p>The Markov method involves several steps:</p>
+<ol type="1">
+<li>
+<strong>Construct a transition matrix</strong>, where each element represents the proportion of “credit” a team gives to its opponents based on outcomes.</li>
+<li>
+<strong>Ensure the matrix is stochastic</strong>, meaning rows sum to 1 (as required for a valid Markov chain).</li>
+<li>
+<strong>Compute the stationary distribution</strong>, which represents the long-term proportion of “strength” or “importance” assigned to each team.</li>
+<li>
+<strong>Interpret the stationary distribution</strong> as the team ratings or rankings.</li>
+</ol></section><section id="step-by-step-procedure" class="level3" data-number="20.4.2"><h3 data-number="20.4.2" class="anchored" data-anchor-id="step-by-step-procedure">
+<span class="header-section-number">20.4.2</span> Step-by-Step Procedure</h3>
+<section id="step-1-building-the-transition-matrix" class="level4"><h4 class="anchored" data-anchor-id="step-1-building-the-transition-matrix">Step 1: Building the Transition Matrix</h4>
+<p>The method starts by constructing a matrix <span class="math inline">\(P\)</span>, called the <strong>transition matrix</strong>, where the entry <span class="math inline">\(P_{ij}\)</span> represents the probability that the ranking process transitions from team <span class="math inline">\(i\)</span> to team <span class="math inline">\(j\)</span>. Intuitively:</p>
+<ul>
+<li>If Team A loses to Team B, some “strength” flows from A to B.</li>
+<li>If Team A defeats Team B, B gives credit to A.</li>
+</ul>
+<p>This can be built from win counts, point differentials, or other measures of performance. One common approach is to define:</p>
+<p><span class="math display">\[
+P_{ij} = \frac{\text{Number of times team } i \text{ lost to team } j}{\text{Total number of games played by team } i}
+\]</span></p>
+<p>Alternatively, in point-based systems:</p>
+<p><span class="math display">\[
+P_{ij} = \frac{\text{Points allowed by team } i \text{ to team } j}{\text{Total points allowed by team } i}
+\]</span></p>
+<p>This ensures that rows sum to 1, satisfying the <strong>stochastic matrix</strong> condition.</p>
+</section><section id="handling-no-games-or-zero-totals" class="level4"><h4 class="anchored" data-anchor-id="handling-no-games-or-zero-totals">Handling No Games or Zero Totals</h4>
+<p>If a team has not lost or allowed points to any team (e.g., an undefeated team), small adjustments or smoothing may be applied (such as adding a small constant to all entries) to avoid rows summing to zero, which would break the Markov model.</p>
+</section><section id="step-2-computing-the-stationary-distribution" class="level4"><h4 class="anchored" data-anchor-id="step-2-computing-the-stationary-distribution">Step 2: Computing the Stationary Distribution</h4>
+<p>Once the matrix <span class="math inline">\(P\)</span> is built, the next step is to find its <strong>stationary distribution</strong> <span class="math inline">\(\pi\)</span>, which satisfies:</p>
+<p><span class="math display">\[
+\pi = \pi P
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\sum_i \pi_i = 1
+\]</span></p>
+<p>This vector <span class="math inline">\(\pi\)</span> represents the long-run proportion of “credit” or “importance” held by each team in the competition network. In other words, if competition continued indefinitely, <span class="math inline">\(\pi_i\)</span> is the proportion of time the process would “visit” team <span class="math inline">\(i\)</span>.</p>
+<p>In matrix algebra, <span class="math inline">\(\pi\)</span> is the <strong>dominant left eigenvector</strong> of <span class="math inline">\(P\)</span> corresponding to eigenvalue 1.</p>
+</section><section id="step-3-interpreting-rankings" class="level4"><h4 class="anchored" data-anchor-id="step-3-interpreting-rankings">Step 3: Interpreting Rankings</h4>
+<p>Teams with higher values in <span class="math inline">\(\pi\)</span> are considered stronger, as they receive more credit from the flow of competition. This incorporates both:</p>
+<ul>
+<li>
+<strong>Direct performance</strong> (winning games or scoring points), and</li>
+<li>
+<strong>Indirect strength</strong> (beating good teams, or losing only to top teams).</li>
+</ul>
+<p>The resulting rankings thus naturally reflect the interconnectedness and relative importance of each competitor.</p>
+</section></section><section id="applications-and-advantages" class="level3" data-number="20.4.3"><h3 data-number="20.4.3" class="anchored" data-anchor-id="applications-and-advantages">
+<span class="header-section-number">20.4.3</span> Applications and Advantages</h3>
+<p>The Markov method is particularly useful in sports environments characterized by:</p>
+<ul>
+<li>
+<strong>Incomplete schedules</strong>, where not every team faces every other team.</li>
+<li>
+<strong>Irregular competition patterns</strong>, such as college sports, tennis, or round-robin tournaments.</li>
+<li>
+<strong>Desire to emphasize strength of schedule</strong>, as the model naturally accounts for opponent quality.</li>
+</ul>
+<section id="advantages" class="level4"><h4 class="anchored" data-anchor-id="advantages">Advantages</h4>
+<ul>
+<li>Accounts for indirect competition (“I beat the team that beat you”).</li>
+<li>Ensures every team is rated, even if they do not play head-to-head.</li>
+<li>Mathematically robust and elegant.</li>
+</ul></section><section id="limitations-1" class="level4"><h4 class="anchored" data-anchor-id="limitations-1">Limitations</h4>
+<ul>
+<li>Can produce unstable results if teams are disconnected (require smoothing).</li>
+<li>Does not explicitly account for margin of victory unless incorporated into the matrix construction.</li>
+<li>May favor teams in more connected parts of the schedule network.</li>
+</ul></section></section><section id="example-in-r-using-comperank-1" class="level3" data-number="20.4.4"><h3 data-number="20.4.4" class="anchored" data-anchor-id="example-in-r-using-comperank-1">
+<span class="header-section-number">20.4.4</span> Example in R (using <code>comperank</code>)</h3>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/comperank/man/markov.html">rank_markov</a></span><span class="op">(</span></span>
+<span>  cr_data <span class="op">=</span> <span class="va">ncaa2005</span>,</span>
+<span>  <span class="fu">comperes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/comperes/man/num_wins.html">num_wins</a></span><span class="op">(</span><span class="va">score1</span>, <span class="va">score2</span>, half_for_draw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  stoch_modify <span class="op">=</span> <span class="va">vote_equal</span>,</span>
+<span>  keep_rating <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  player rating_markov ranking_markov
+  &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt;
+1 Duke          0.0876              5
+2 Miami         0.438               1
+3 UNC           0.146               3
+4 UVA           0.109               4
+5 VT            0.219               2</code></pre>
+</div>
+</div>
+</section><section id="relationship-to-other-ranking-methods" class="level3" data-number="20.4.5"><h3 data-number="20.4.5" class="anchored" data-anchor-id="relationship-to-other-ranking-methods">
+<span class="header-section-number">20.4.5</span> Relationship to Other Ranking Methods</h3>
+<table class="table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 29%">
+<col style="width: 34%">
+<col style="width: 25%">
+</colgroup>
+<thead><tr class="header">
+<th>Method</th>
+<th>Handles Incomplete Schedules</th>
+<th>Accounts for Opponent Strength</th>
+<th>Uses Point Differentials</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Massey</td>
+<td>Yes</td>
+<td>Partially</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Colley</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Elo</td>
+<td>Yes</td>
+<td>Yes (indirectly through ratings)</td>
+<td>Optional</td>
+</tr>
+<tr class="even">
+<td>Keener</td>
+<td>Yes</td>
+<td>Yes (via eigenvector structure)</td>
+<td>Optional</td>
+</tr>
+<tr class="odd">
+<td><strong>Markov</strong></td>
+<td>Yes</td>
+<td><strong>Yes (flow-based)</strong></td>
+<td>Optional</td>
+</tr>
+</tbody>
+</table>
+<p>As shown above, the Markov method excels when the strength of schedule and indirect results are important considerations.</p>
+</section></section><section id="the-offense-defense-method" class="level2" data-number="20.5"><h2 data-number="20.5" class="anchored" data-anchor-id="the-offense-defense-method">
+<span class="header-section-number">20.5</span> The Offense-Defense Method</h2>
+<p>Many ranking methods, such as Massey, Elo, and even Keener and Markov, focus primarily on overall team performance — considering whether teams win or lose and how they perform relative to others. However, in many sports, success is the result of <strong>two distinct dimensions of performance</strong>:</p>
+<ul>
+<li>
+<strong>Offense</strong>: The ability to score points (or goals).</li>
+<li>
+<strong>Defense</strong>: The ability to prevent opponents from scoring.</li>
+</ul>
+<p>For example, a team may excel offensively but be weak defensively, while another may win many games based on a strong defense despite scoring relatively few points.</p>
+<p>The <strong>Offense-Defense Method</strong> explicitly models this dual nature of performance by assigning <strong>two ratings to each team</strong>:</p>
+<ul>
+<li>An <strong>Offensive rating</strong>, reflecting how well the team scores.</li>
+<li>A <strong>Defensive rating</strong>, reflecting how well the team prevents opponents from scoring.</li>
+</ul>
+<p>By jointly modeling these two dimensions, this method provides a more nuanced and complete assessment of team strength than methods that focus only on net results.</p>
+<section id="conceptual-overview-2" class="level3" data-number="20.5.1"><h3 data-number="20.5.1" class="anchored" data-anchor-id="conceptual-overview-2">
+<span class="header-section-number">20.5.1</span> Conceptual Overview</h3>
+<p>The Offense-Defense method involves the following key ideas:</p>
+<ol type="1">
+<li><p>Construct a matrix of <strong>points scored from team <span class="math inline">\(i\)</span> to team <span class="math inline">\(j\)</span></strong>, capturing head-to-head offensive performance.</p></li>
+<li><p>Normalize this matrix so that rows (or columns) represent proportional contributions.</p></li>
+<li>
+<p>Apply <strong>iterative updates</strong>:</p>
+<ul>
+<li>Offensive ratings are improved by scoring against teams with strong defensive ratings.</li>
+<li>Defensive ratings are improved by limiting the scoring of teams with strong offensive ratings.</li>
+</ul>
+</li>
+<li><p>Converge to a solution where each team’s offense and defense ratings are mutually consistent.</p></li>
+</ol>
+<p>In matrix terms, the problem becomes finding vectors <span class="math inline">\(\mathbf{o}\)</span> (offense) and <span class="math inline">\(\mathbf{d}\)</span> (defense) such that:</p>
+<p><span class="math display">\[
+\mathbf{o} = A \cdot \mathbf{d}^{-1}
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{d} = A^T \cdot \mathbf{o}^{-1}
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li>
+<span class="math inline">\(A\)</span> is the matrix of points scored (i.e., <span class="math inline">\(A_{ij}\)</span> is the points scored by team <span class="math inline">\(i\)</span> against team <span class="math inline">\(j\)</span>).</li>
+<li>
+<span class="math inline">\(A^T\)</span> is the transpose (points allowed).</li>
+<li>
+<span class="math inline">\(\mathbf{o}^{-1}\)</span> and <span class="math inline">\(\mathbf{d}^{-1}\)</span> indicate element-wise reciprocals.</li>
+</ul>
+<p>Through iteration, these equations converge to stable offense and defense ratings.</p>
+</section><section id="step-by-step-procedure-1" class="level3" data-number="20.5.2"><h3 data-number="20.5.2" class="anchored" data-anchor-id="step-by-step-procedure-1">
+<span class="header-section-number">20.5.2</span> Step-by-Step Procedure</h3>
+<section id="step-1-building-the-points-matrix" class="level4"><h4 class="anchored" data-anchor-id="step-1-building-the-points-matrix">Step 1: Building the Points Matrix</h4>
+<p>The matrix <span class="math inline">\(A\)</span> is constructed as follows:</p>
+<p><span class="math display">\[
+A_{ij} = \text{Total points scored by team } i \text{ against team } j
+\]</span></p>
+<p>If no games occurred between teams, entries are typically set to zero.</p>
+</section><section id="step-2-normalization-optional" class="level4"><h4 class="anchored" data-anchor-id="step-2-normalization-optional">Step 2: Normalization (Optional)</h4>
+<p>To avoid domination by teams that played more games, rows or columns may be normalized to represent proportions rather than raw counts.</p>
+</section><section id="step-3-iterative-rating-updates" class="level4"><h4 class="anchored" data-anchor-id="step-3-iterative-rating-updates">Step 3: Iterative Rating Updates</h4>
+<p>Using an iterative algorithm, offensive and defensive ratings are updated repeatedly:</p>
+<p><span class="math display">\[
+o_i^{(t+1)} = \sum_j A_{ij} \cdot \frac{1}{d_j^{(t)}}
+\]</span></p>
+<p><span class="math display">\[
+d_i^{(t+1)} = \sum_j A_{ji} \cdot \frac{1}{o_j^{(t+1)}}
+\]</span></p>
+<p>Where:</p>
+<ul>
+<li>
+<span class="math inline">\(o_i^{(t)}\)</span> and <span class="math inline">\(d_i^{(t)}\)</span> are the offense and defense ratings at iteration <span class="math inline">\(t\)</span>.</li>
+<li>Iteration continues until ratings stabilize (changes fall below a tolerance level).</li>
+</ul></section><section id="step-4-interpreting-ratings" class="level4"><h4 class="anchored" data-anchor-id="step-4-interpreting-ratings">Step 4: Interpreting Ratings</h4>
+<ul>
+<li>A high <strong>offense rating</strong> indicates a team that scores frequently against strong defenses.</li>
+<li>A low <strong>defense rating</strong> (note: lower is better) indicates a team that limits scoring, especially from strong offenses.</li>
+</ul>
+<p>To create an overall ranking, analysts may use:</p>
+<p><span class="math display">\[
+\text{Overall Rating} = \frac{o_i}{d_i}
+\]</span></p>
+<p>Higher values indicate stronger overall teams that both score well and prevent scoring effectively.</p>
+</section></section><section id="example-in-r-using-comperank-2" class="level3" data-number="20.5.3"><h3 data-number="20.5.3" class="anchored" data-anchor-id="example-in-r-using-comperank-2">
+<span class="header-section-number">20.5.3</span> Example in R (using <code>comperank</code>)</h3>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/comperank/man/offense-defense.html">rank_od</a></span><span class="op">(</span><span class="va">ncaa2005</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">score1</span><span class="op">)</span>, keep_rating <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 7
+  player rating_off rating_def rating_od ranking_off ranking_def ranking_od
+  &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+1 Duke         39.7      1.57       25.3           5           5          5
+2 Miami       181.       0.860     211.            2           2          2
+3 UNC          58.1      1.15       50.6           4           4          4
+4 UVA          95.0      0.914     104.            3           3          3
+5 VT          183.       0.532     344.            1           1          1</code></pre>
+</div>
+</div>
+<p>This function in <code>comperank</code>:</p>
+<ul>
+<li>Automatically builds the scoring matrix.</li>
+<li>Performs iterative updates.</li>
+<li>Returns offense and defense ratings, as well as the overall ranking.</li>
+</ul></section><section id="applications-and-advantages-1" class="level3" data-number="20.5.4"><h3 data-number="20.5.4" class="anchored" data-anchor-id="applications-and-advantages-1">
+<span class="header-section-number">20.5.4</span> Applications and Advantages</h3>
+<p>The Offense-Defense method is especially valuable in sports where:</p>
+<ul>
+<li>Both scoring ability and defensive prowess are critical (e.g., basketball, football, soccer).</li>
+<li>Blowout scores and defensive shutouts occur.</li>
+<li>It is important to disentangle teams that win via different styles.</li>
+</ul>
+<section id="advantages-1" class="level4"><h4 class="anchored" data-anchor-id="advantages-1">Advantages</h4>
+<ul>
+<li>Captures both offensive and defensive performance explicitly.</li>
+<li>More nuanced than simple win-loss based methods.</li>
+<li>Allows identification of teams that are elite offensively or defensively, even if overall rankings are modest.</li>
+</ul></section><section id="limitations-2" class="level4"><h4 class="anchored" data-anchor-id="limitations-2">Limitations</h4>
+<ul>
+<li>Requires detailed game score data (win-loss results alone are insufficient).</li>
+<li>Iterative algorithms may be sensitive to initial values or convergence criteria.</li>
+<li>Interpretation is more complex, as two ratings (offense and defense) are produced.</li>
+</ul></section></section><section id="comparison-with-other-methods" class="level3" data-number="20.5.5"><h3 data-number="20.5.5" class="anchored" data-anchor-id="comparison-with-other-methods">
+<span class="header-section-number">20.5.5</span> Comparison with Other Methods</h3>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 18%">
+<col style="width: 31%">
+<col style="width: 30%">
+</colgroup>
+<thead><tr class="header">
+<th>Method</th>
+<th>Uses Point Totals</th>
+<th>Separates Offense and Defense</th>
+<th>Handles Incomplete Schedules</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Massey</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Colley</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Elo</td>
+<td>Optional</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Keener</td>
+<td>Optional</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Markov</td>
+<td>Optional</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td><strong>Offense-Defense</strong></td>
+<td><strong>Yes</strong></td>
+<td><strong>Yes</strong></td>
+<td><strong>Yes</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The Offense-Defense method is unique in its explicit separation of scoring and defending ability, making it highly informative for performance analysis.</p>
+
+
+</section></section></main><!-- /main --><script>
+
+/* update total correct if #webex-total_correct exists */
+update_total_correct = function() {
+  console.log("webex: update total_correct");
+
+  var t = document.getElementsByClassName("webex-total_correct");
+  for (var i = 0; i < t.length; i++) {
+    p = t[i].parentElement;
+    var correct = p.getElementsByClassName("webex-correct").length;
+    var solvemes = p.getElementsByClassName("webex-solveme").length;
+    var radiogroups = p.getElementsByClassName("webex-radiogroup").length;
+    var selects = p.getElementsByClassName("webex-select").length;
+
+    t[i].innerHTML = correct + " of " + (solvemes + radiogroups + selects) + " correct";
+  }
+}
+
+/* webex-solution button toggling function */
+b_func = function() {
+  console.log("webex: toggle hide");
+
+  var cl = this.parentElement.classList;
+  if (cl.contains('open')) {
+    cl.remove("open");
+  } else {
+    cl.add("open");
+  }
+}
+
+/* check answers */
+check_func = function() {
+  console.log("webex: check answers");
+
+  var cl = this.parentElement.classList;
+  if (cl.contains('unchecked')) {
+    cl.remove("unchecked");
+    this.innerHTML = "Hide Answers";
+  } else {
+    cl.add("unchecked");
+    this.innerHTML = "Show Answers";
+  }
+}
+
+/* function for checking solveme answers */
+solveme_func = function(e) {
+  console.log("webex: check solveme");
+
+  var real_answers = JSON.parse(this.dataset.answer);
+  var my_answer = this.value;
+  var cl = this.classList;
+  if (cl.contains("ignorecase")) {
+    my_answer = my_answer.toLowerCase();
+  }
+  if (cl.contains("nospaces")) {
+    my_answer = my_answer.replace(/ /g, "")
+  }
+
+  if (my_answer == "") {
+    cl.remove("webex-correct");
+    cl.remove("webex-incorrect");
+  } else if (real_answers.includes(my_answer)) {
+    cl.add("webex-correct");
+    cl.remove("webex-incorrect");
+  } else {
+    cl.add("webex-incorrect");
+    cl.remove("webex-correct");
+  }
+
+  // match numeric answers within a specified tolerance
+  if(this.dataset.tol > 0){
+    var tol = JSON.parse(this.dataset.tol);
+    var matches = real_answers.map(x => Math.abs(x - my_answer) < tol)
+    if (matches.reduce((a, b) => a + b, 0) > 0) {
+      cl.add("webex-correct");
+    } else {
+      cl.remove("webex-correct");
+    }
+  }
+
+  // added regex bit
+  if (cl.contains("regex")){
+    answer_regex = RegExp(real_answers.join("|"))
+    if (answer_regex.test(my_answer)) {
+      cl.add("webex-correct");
+    }
+  }
+
+  update_total_correct();
+}
+
+/* function for checking select answers */
+select_func = function(e) {
+  console.log("webex: check select");
+
+  var cl = this.classList
+
+  /* add style */
+  cl.remove("webex-incorrect");
+  cl.remove("webex-correct");
+  if (this.value == "answer") {
+    cl.add("webex-correct");
+  } else if (this.value != "blank") {
+    cl.add("webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+/* function for checking radiogroups answers */
+radiogroups_func = function(e) {
+  console.log("webex: check radiogroups");
+
+  var checked_button = document.querySelector('input[name=' + this.id + ']:checked');
+  var cl = checked_button.parentElement.classList;
+  var labels = checked_button.parentElement.parentElement.children;
+
+  /* get rid of styles */
+  for (i = 0; i < labels.length; i++) {
+    labels[i].classList.remove("webex-incorrect");
+    labels[i].classList.remove("webex-correct");
+  }
+
+  /* add style */
+  if (checked_button.value == "answer") {
+    cl.add("webex-correct");
+  } else {
+    cl.add("webex-incorrect");
+  }
+
+  update_total_correct();
+}
+
+window.onload = function() {
+  console.log("webex onload");
+  /* set up solution buttons */
+  var buttons = document.getElementsByTagName("button");
+
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].parentElement.classList.contains('webex-solution')) {
+      buttons[i].onclick = b_func;
+    }
+  }
+
+  var check_sections = document.getElementsByClassName("webex-check");
+  console.log("check:", check_sections.length);
+  for (var i = 0; i < check_sections.length; i++) {
+    check_sections[i].classList.add("unchecked");
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "Show Answers";
+    btn.classList.add("webex-check-button");
+    btn.onclick = check_func;
+    check_sections[i].appendChild(btn);
+
+    let spn = document.createElement("span");
+    spn.classList.add("webex-total_correct");
+    check_sections[i].appendChild(spn);
+  }
+
+  /* set up webex-solveme inputs */
+  var solveme = document.getElementsByClassName("webex-solveme");
+
+  for (var i = 0; i < solveme.length; i++) {
+    /* make sure input boxes don't auto-anything */
+    solveme[i].setAttribute("autocomplete","off");
+    solveme[i].setAttribute("autocorrect", "off");
+    solveme[i].setAttribute("autocapitalize", "off");
+    solveme[i].setAttribute("spellcheck", "false");
+    solveme[i].value = "";
+
+    /* adjust answer for ignorecase or nospaces */
+    var cl = solveme[i].classList;
+    var real_answer = solveme[i].dataset.answer;
+    if (cl.contains("ignorecase")) {
+      real_answer = real_answer.toLowerCase();
+    }
+    if (cl.contains("nospaces")) {
+      real_answer = real_answer.replace(/ /g, "");
+    }
+    solveme[i].dataset.answer = real_answer;
+
+    /* attach checking function */
+    solveme[i].onkeyup = solveme_func;
+    solveme[i].onchange = solveme_func;
+
+    solveme[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+  }
+
+  /* set up radiogroups */
+  var radiogroups = document.getElementsByClassName("webex-radiogroup");
+  for (var i = 0; i < radiogroups.length; i++) {
+    radiogroups[i].onchange = radiogroups_func;
+  }
+
+  /* set up selects */
+  var selects = document.getElementsByClassName("webex-select");
+  for (var i = 0; i < selects.length; i++) {
+    selects[i].onchange = select_func;
+    selects[i].insertAdjacentHTML("afterend", " <span class='webex-icon'></span>")
+  }
+
+  update_total_correct();
+}
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./19_Rankings.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Intro to Rankings</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">STA 3311</div>
+  </div>
+</footer>
+
+
+</body></html>
